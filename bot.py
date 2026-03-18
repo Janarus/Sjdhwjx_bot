@@ -7,7 +7,7 @@ from telegram.ext import (
     filters,
     ContextTypes,
 )
-from keep_alive import keep_alive
+
 
 BOT_TOKEN = "8761711302:AAHVG8YbgwNbDZ2wsCVCd5qkelKEtILeroo"
 ADMIN_ID = 5267146792
@@ -86,7 +86,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 def main():
-    keep_alive()
+    
 
     app = ApplicationBuilder().token(BOT_TOKEN).build()
     app.add_handler(CommandHandler("start", start))
