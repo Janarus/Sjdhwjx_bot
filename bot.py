@@ -8,7 +8,7 @@ from telegram.ext import (
     ContextTypes,
 )
 
-# Токен мен Админ ID өзгеріссіз қалды
+# Токен мен Админ ID
 BOT_TOKEN = "8761711302:AAHVG8YbgwNbDZ2wsCVCd5qkelKEtILeroo"
 ADMIN_ID = 5267146792
 
@@ -37,7 +37,6 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = user.id
     text = update.message.text if update.message.text else ""
 
-    # Админ жауабын өңдеу
     if user_id == ADMIN_ID:
         if update.message.reply_to_message:
             original_msg_id = update.message.reply_to_message.message_id
@@ -51,7 +50,6 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     state = user_state.get(user_id, "start")
 
-    # Пайдаланушы хабарламаларын админге жіберу
     if state == "awaiting_confirmation" and text.strip() == "1":
         user_state[user_id] = "awaiting_phone"
         await update.message.reply_text(
@@ -65,7 +63,6 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
         )
         user_state[user_id] = "done"
 
-    # Хабарламаны админге бағыттау
     forwarded = await context.bot.forward_message(
         chat_id=ADMIN_ID,
         from_chat_id=update.message.chat_id,
@@ -74,12 +71,10 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     forwarded_map[forwarded.message_id] = user_id
 
 def main():
-    # keep_alive өшірілді, Render-де қате бермес үшін
+    # Render-де қате бермеуі үшін бәрі тазаланды
     app = ApplicationBuilder().token(BOT_TOKEN).build()
-    
     app.add_handler(CommandHandler("start", start))
     app.add_handler(MessageHandler(filters.ALL & ~filters.COMMAND, handle_message))
-
     logger.info("Bot started.")
     app.run_polling(drop_pending_updates=True)
 
